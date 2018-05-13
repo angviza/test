@@ -19,7 +19,7 @@ import static org.bytedeco.javacpp.opencv_imgproc.*;
 public class RLSA {
 
     public static void main(String[] args) {
-        String imagePath = "E:\\WORKSPACES\\TEST\\iris\\src\\main\\java\\org\\quinn\\test\\Shapes2.jpg";
+        String imagePath = FileUtils.getResPath("Shapes2.jpg");
 
         IplImage image = null;
         try {
