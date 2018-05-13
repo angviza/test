@@ -46,8 +46,8 @@ import org.bytedeco.javacpp.opencv_core.MatVector;
  */
 public class OpenCVFaceRecognizer {
     public static void main(String[] args) {
-        String trainingDir = args[0];
-        Mat testImage = imread(args[1], CV_LOAD_IMAGE_GRAYSCALE);
+        String trainingDir = "D:\\";
+        Mat testImage = imread(FileUtils.getResPath("res/1.jpg"), CV_LOAD_IMAGE_GRAYSCALE);
 
         File root = new File(trainingDir);
 

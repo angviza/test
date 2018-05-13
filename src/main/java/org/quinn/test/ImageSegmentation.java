@@ -57,7 +57,7 @@ public class ImageSegmentation {
 
     public static void main(String[] args) {
         // Load the image
-        Mat src = imread("E:\\WORKSPACES\\TEST\\iris\\src\\main\\java\\org\\quinn\\test\\Shapes2.jpg");
+        Mat src = imread(FileUtils.getResPath("res/iris3.jpg"));
         // Check if everything was fine
         if (src.data().isNull())
             return;

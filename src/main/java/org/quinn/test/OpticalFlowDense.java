@@ -14,9 +14,9 @@ import static org.bytedeco.javacpp.opencv_video.*;
 public class OpticalFlowDense {
 
     public static void main(final String[] args) {
-        final Mat pFrame = imread("samples/image0.png",
+        final Mat pFrame = imread(FileUtils.getResPath("res/1.jpg"),
                 CV_LOAD_IMAGE_GRAYSCALE),
-                cFrame = imread("samples/image1.png", CV_LOAD_IMAGE_GRAYSCALE),
+                cFrame = imread(FileUtils.getResPath("res/2.jpg"), CV_LOAD_IMAGE_GRAYSCALE),
                 pGray = new Mat(), cGray = new Mat(), Optical_Flow = new Mat();
 
         pFrame.convertTo(pGray, CV_32FC1);

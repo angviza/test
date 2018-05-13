@@ -39,6 +39,8 @@ public class Test {
         //imwrite("D:\\lakeResult.jpg",gray);
         imshow("灰度图像",gray);
         Mat bin=new Mat();
+        Mat fi=new Mat();
+        //kirsch_filter
         threshold(gray,bin,50,255,THRESH_TOZERO); 	//图像二值化
         imshow("二值图像",bin);
         waitKey(0);

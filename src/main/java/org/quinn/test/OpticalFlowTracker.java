@@ -22,10 +22,10 @@ public class OpticalFlowTracker {
     public static void main(String[] args) {
         // Load two images and allocate other structures
         IplImage imgA = cvLoadImage(
-                "image0.png",
+                FileUtils.getResPath("image0.png"),
                 CV_LOAD_IMAGE_GRAYSCALE);
         IplImage imgB = cvLoadImage(
-                "image1.png",
+                FileUtils.getResPath("image1.png"),
                 CV_LOAD_IMAGE_GRAYSCALE);
 
         CvSize img_sz = cvGetSize(imgA);
@@ -34,7 +34,7 @@ public class OpticalFlowTracker {
         // IplImage imgC = cvLoadImage("OpticalFlow1.png",
         // CV_LOAD_IMAGE_UNCHANGED);
         IplImage imgC = cvLoadImage(
-                "image0.png",
+                FileUtils.getResPath("image0.png"),
                 CV_LOAD_IMAGE_UNCHANGED);
         // Get the features for tracking
         IplImage eig_image = cvCreateImage(img_sz, IPL_DEPTH_32F, 1);
@@ -83,9 +83,9 @@ public class OpticalFlowTracker {
                     2, 8, 0);
         }
 
-        cvSaveImage(
-                "image0-1.png",
-                imgC);
+//        cvSaveImage(
+//                "image0-1.png",
+//                imgC);
         cvNamedWindow( "LKpyr_OpticalFlow", 0 );
         cvShowImage( "LKpyr_OpticalFlow", imgC );
         cvWaitKey(0);
