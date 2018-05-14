@@ -1,12 +1,15 @@
 package main
 
 import (
-	"gocv.io/x/gocv"
+	"os"
 	"fmt"
+	"strconv"
+	"gocv.io/x/gocv"
+	"image/color"
 	"image"
 )
 
-func main() {
+func Video(){
 	if len(os.Args) < 3 {
 		fmt.Println("How to run:\n\tfacedetect [camera ID] [classifier XML file]")
 		return
