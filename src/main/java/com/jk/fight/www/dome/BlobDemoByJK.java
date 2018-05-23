@@ -6,6 +6,7 @@ import org.bytedeco.javacv.OpenCVFrameConverter;
 //import org.opencv.core.Mat;
 //import org.opencv.imgcodecs.Imgcodecs;
 
+
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_imgcodecs.*;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
@@ -15,6 +16,7 @@ import org.bytedeco.javacpp.IntPointer;
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.indexer.FloatIndexer;
 import org.bytedeco.javacpp.opencv_core.Mat;
+import org.bytedeco.javacpp.opencv_core.Point3f;
 
 //import org.bytedeco.javacpp.BytePointer;
 //import org.bytedeco.javacpp.opencv_core.CvSeq;
@@ -328,13 +330,12 @@ public class BlobDemoByJK
     		}
     	}
     }
-    public static int getMatElement(Mat img,int row,int col,int channel){  
-        //获取字节指针  
+    public static byte getMatElement(Mat img,int row,int col,int channel){  
+    	//获取字节指针  
         BytePointer bytePointer = img.ptr(row, col);  
-        int value = bytePointer.get(channel);  
-        if(value<0){  
-            value=value+256;  
-        }  
+        Point3f poi =new Point3f(bytePointer);
+        byte value = (byte) poi.get(channel);
+        if(value<0) value+=256;  
         return value;  
     } 
     
