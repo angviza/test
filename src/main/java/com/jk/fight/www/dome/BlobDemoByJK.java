@@ -15,6 +15,7 @@ import org.bytedeco.javacpp.IntPointer;
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.indexer.FloatIndexer;
 import org.bytedeco.javacpp.opencv_core.Mat;
+import org.quinn.test.FileUtils;
 
 //import org.bytedeco.javacpp.BytePointer;
 //import org.bytedeco.javacpp.opencv_core.CvSeq;
@@ -49,7 +50,7 @@ public class BlobDemoByJK
     public static void james() {
 //    	IplImage RawImage = cvLoadImage("F:\\Users\\james\\eclipseSpacse\\iris\\src\\main\\java\\org\\quinn\\test\\hongmo.jpg"); 
 //    	IplImage RawImage = cvLoadImage("F:\\Users\\james\\eclipseSpacse\\iris\\src\\main\\java\\org\\quinn\\test\\hongmo2.jpg"); 
-    	IplImage RawImage = cvLoadImage("D:\\SoftwareData\\jamesMot\\myProject\\test\\src\\main\\resources\\res\\2.jpg");
+    	IplImage RawImage = cvLoadImage(FileUtils.getResPath("res\\2.jpg"));
 //    	IplImage RawImage = cvLoadImage("F:\\Users\\james\\eclipseSpacse\\iris\\src\\main\\java\\org\\quinn\\test\\yuan.jpg");
 //    	IplImage RawImage = cvLoadImage("F:\\Users\\james\\eclipseSpacse\\iris\\src\\main\\java\\org\\quinn\\test\\yingbi.jpg");
 //    	IplImage RawImage = cvLoadImage("F:\\Users\\james\\eclipseSpacse\\iris\\src\\main\\java\\org\\quinn\\test\\y1.png");
