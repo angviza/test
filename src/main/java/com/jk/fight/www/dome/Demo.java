@@ -1,5 +1,6 @@
 package com.jk.fight.www.dome;
 
+import java.io.File;
 import java.util.List;
 
 import com.jk.fight.www.Utils.Point3D;
@@ -9,6 +10,7 @@ import org.bytedeco.javacpp.opencv_core.Point3f;
 import org.bytedeco.javacpp.indexer.UByteRawIndexer;
 
 import com.jk.fight.www.Utils.CircleUtils;
+import org.quinn.test.FileUtils;
 import org.quinn.test.ImgUtils;
 
 import static org.bytedeco.javacpp.opencv_core.*;
@@ -19,12 +21,13 @@ import static com.jk.fight.www.dome.ShowImg.*;
 public class Demo {
     public static void main(String[] args) {
         try {
-            String path="D:\\SoftwareData\\jamesMot\\myProject\\test\\src\\main\\resources\\res\\";
+            String path= FileUtils.getResPath("res");
 //		String[] names={"iris2.jpg","iris2.jpg","iris3.jpg"};
+            System.out.println(path);
 			String[] names={"20180417142503.jpg","20180418145543.jpg","1.jpg","2.jpg"};
 //            String[] names={"2.jpg"};
             for(String name:names){
-                Mat source = imread(path+name);
+                Mat source = imread(path+ File.separator+name);
 				ShowImage(source,"源图");
                 checkAndShowImg(source);
 //				searchSpot2(source);
