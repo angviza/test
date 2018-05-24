@@ -1,4 +1,4 @@
-package com.jk.fight.www.dome;
+package org.jk.demo;
 
 import static org.bytedeco.javacpp.opencv_core.CV_8UC1;
 import static org.bytedeco.javacpp.opencv_core.IPL_DEPTH_8U;
@@ -17,7 +17,7 @@ import static org.bytedeco.javacpp.opencv_imgproc.cvRectangle;
 
 import java.util.List;
 
-import com.jk.fight.www.Utils.Point3D;
+import org.jk.Utils.Point3D;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.CvMat;
 import org.bytedeco.javacpp.opencv_core.CvPoint;

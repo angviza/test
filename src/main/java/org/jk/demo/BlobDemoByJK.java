@@ -1,4 +1,4 @@
-package com.jk.fight.www.dome;
+package org.jk.demo;
 
 import org.bytedeco.javacv.Blobs;
 import org.bytedeco.javacv.CanvasFrame;
@@ -11,9 +11,6 @@ import static org.bytedeco.javacpp.opencv_imgcodecs.*;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 
 import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.javacpp.IntPointer;
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.indexer.FloatIndexer;
 import org.bytedeco.javacpp.opencv_core.Mat;
 import org.quinn.test.FileUtils;
 

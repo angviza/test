@@ -1,22 +1,20 @@
-package com.jk.fight.www.dome;
+package org.jk.demo;
 
 import java.io.File;
 import java.util.List;
 
-import com.jk.fight.www.Utils.Point3D;
+import org.jk.Utils.Point3D;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.opencv_core.Mat;
-import org.bytedeco.javacpp.opencv_core.Point3f;
 import org.bytedeco.javacpp.indexer.UByteRawIndexer;
 
-import com.jk.fight.www.Utils.CircleUtils;
+import org.jk.Utils.CircleUtils;
 import org.quinn.test.FileUtils;
 import org.quinn.test.ImgUtils;
 
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_imgcodecs.*;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
-import static com.jk.fight.www.dome.ShowImg.*;
 
 public class Demo {
     public static void main(String[] args) {
@@ -28,7 +26,7 @@ public class Demo {
 //            String[] names={"2.jpg"};
             for(String name:names){
                 Mat source = imread(path+ File.separator+name);
-				ShowImage(source,"源图");
+				ShowImg.ShowImage(source,"源图");
                 checkAndShowImg(source);
 //				searchSpot2(source);
 //				test(source);
@@ -69,7 +67,7 @@ public class Demo {
 
     public static void searchSpot(Mat source){
         //stemp 1:转灰度
-        ShowImage(source);
+        ShowImg.ShowImage(source);
         Mat gray=CircleUtils.exeGray(source);
         threshold(gray, gray, 225, 255, THRESH_TOZERO);
 //		GaussianBlur(gray, gray, new Size(5, 5), 11d);
@@ -77,7 +75,7 @@ public class Demo {
 //		erode(gray, gray,new Mat(3,3),new Point(-1, -1),3,BORDER_CONSTANT,new Scalar(0, 0, 255, 0));
 //        dilate(gray, gray, null);
         Canny(gray, gray, 50,100);
-        ShowImage(gray,"gb");
+        ShowImg.ShowImage(gray,"gb");
 
 //		Canny(gray, gray, 40, 100);
 //		ShowImage(gray,"canny");
@@ -89,7 +87,7 @@ public class Demo {
 
     public static void searchSpot2(Mat source){
         //stemp 1:转灰度
-        ShowImage(source);
+        ShowImg.ShowImage(source);
         Mat gray=CircleUtils.exeGray(source);
         //stemp 2:寻找反光点
         List<Point3D> pois = CircleUtils.searchHeight(gray);
@@ -120,13 +118,13 @@ public class Demo {
 //		ShowImage(source);
         //截取外圆
         Mat circle =getCircle(source, poi.getX(), poi.getY(),poi.getR(),poi2.getX(), poi2.getY(),poi2.getR());
-		ShowImage(circle,"定位待查询的范围图");
+		ShowImg.ShowImage(circle,"定位待查询的范围图");
         //
 //        CircleUtils.searchSpot(circle,source);
 //        Mat ret = new Mat(circle.rows(),circle.cols(),CV_8UC3);
         List<Point3D> pois =ImgUtils.findBlobs(circle);
-        if(!pois.isEmpty()) circleLight(source, pois);
-        ShowImage(source,"查找斑点图结果图");
+        if(!pois.isEmpty()) ShowImg.circleLight(source, pois);
+        ShowImg.ShowImage(source,"查找斑点图结果图");
     }
     public static boolean isInCircle(int yx,int yy,int yr,int yx2,int yy2,int yr2,int x,int y){
         int x1 = Math.abs(x-yx);

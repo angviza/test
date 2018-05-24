@@ -1,9 +1,7 @@
-package com.jk.fight.www.Utils;
+package org.jk.Utils;
 
 import static org.bytedeco.javacpp.opencv_core.*;
-import static org.bytedeco.javacpp.opencv_imgcodecs.*;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
-import static com.jk.fight.www.dome.ShowImg.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +11,7 @@ import org.bytedeco.javacpp.opencv_core.IplImage;
 import org.bytedeco.javacpp.opencv_core.Mat;
 import org.bytedeco.javacpp.opencv_core.Point3f;
 import org.bytedeco.javacv.Blobs;
+import org.jk.demo.ShowImg;
 
 public class CircleUtils {
 
@@ -26,7 +25,7 @@ public class CircleUtils {
         threshold(gray, gray, 205, 255, THRESH_TOZERO);
 //		Canny(gray, gray, 255,255);
         bitwise_not(gray, gray);
-        ShowImage(gray);
+        ShowImg.ShowImage(gray);
         Blobs Regions = new Blobs();
         Regions.BlobAnalysis(
                 new IplImage(gray),               // image
@@ -45,7 +44,7 @@ public class CircleUtils {
             int MaxX = (int) Region[Blobs.BLOBMAXX];
             int MinY = (int) Region[Blobs.BLOBMINY];
             int MaxY = (int) Region[Blobs.BLOBMAXY];
-            Highlight(src,  MinX, MinY, MaxX, MaxY, 5);
+            ShowImg.Highlight(src,  MinX, MinY, MaxX, MaxY, 5);
 //            int radius=MaxX-MinX<=MaxY-MinY?(MaxY-MinY)/2:(MaxX-MinX)/2;
 //            int x=MinX+(MaxX-MinX)/2;
 //            int y=MinY+(MaxY-MinY)/2;
@@ -55,7 +54,7 @@ public class CircleUtils {
 //            Highlight(new IplImage(graySrc),  MinX, MinY, MaxX, MaxY, 5);
         }
 
-        ShowImage(src, "src--blobs");
+        ShowImg.ShowImage(src, "src--blobs");
 //		Mat ret=new Mat(gray.rows(),gray.cols(),CV_8UC3);
 //		HoughCircles(gray,ret , CV_HOUGH_GRADIENT,
 //        		1,50,50,100,1,20);
@@ -64,8 +63,8 @@ public class CircleUtils {
 //    			pois.add(new Point3f(ret.ptr(row,col)));
 //    		}
 //    	}
-        circleLight(graySrc, pois);
-        ShowImage(graySrc,"searchHeight");
+        ShowImg.circleLight(graySrc, pois);
+        ShowImg.ShowImage(graySrc,"searchHeight");
         return pois;
     }
 
@@ -80,7 +79,7 @@ public class CircleUtils {
         dilate(gray, gray,new Mat(),new Point(-1,-1),3,BORDER_CONSTANT,morphologyDefaultBorderValue());
         GaussianBlur(src,src,new Size(5,5),10d);
         Canny(gray, gray, 80, 150);
-        ShowImage(gray);
+        ShowImg.ShowImage(gray);
 //        ShowImage(WorkingImage, "WorkingImage", 512);
 //        if(1==1) return null;
         IplImage src2= new IplImage(gray);
@@ -91,14 +90,14 @@ public class CircleUtils {
             BytePointer p =cvGetSeqElem(results,i);
             Point3f poi =new Point3f(p);
             System.out.println(i+"=poi=x="+poi.get(0)+",y="+poi.get(1)+",radius="+poi.get(2));
-            circleLight(RawImage, (int)poi.get(0), (int)poi.get(1),(int)poi.get(2));
+            ShowImg.circleLight(RawImage, (int)poi.get(0), (int)poi.get(1),(int)poi.get(2));
         }
-        ShowImage(RawImage, "jieguo");
+        ShowImg.ShowImage(RawImage, "jieguo");
         return null;
     }
 
     public static Point3f searchSpot(Mat src,Mat srcRealy){
-        ShowImage(src);
+        ShowImg.ShowImage(src);
         Mat gray=src.clone();
         cvtColor(gray, gray, CV_BGR2GRAY);
         threshold(gray, gray,100,255, CV_THRESH_BINARY);
@@ -109,7 +108,7 @@ public class CircleUtils {
 //        dilate(gray, gray,new Mat(),new Point(-1,-1),3,BORDER_CONSTANT,morphologyDefaultBorderValue());
 //        GaussianBlur(src,src,new Size(3,3),2d);
 //        Canny(gray, gray, 45, 90);
-        ShowImage(gray);
+        ShowImg.ShowImage(gray);
 //        ShowImage(WorkingImage, "WorkingImage", 512);
 //        if(1==1) return null;
         Blobs Regions = new Blobs();
@@ -131,9 +130,9 @@ public class CircleUtils {
             int MaxX = (int) Region[Blobs.BLOBMAXX];
             int MinY = (int) Region[Blobs.BLOBMINY];
             int MaxY = (int) Region[Blobs.BLOBMAXY];
-            Highlight(src2,  MinX, MinY, MaxX, MaxY, 5);
+            ShowImg.Highlight(src2,  MinX, MinY, MaxX, MaxY, 5);
         }
-        ShowImage(src2, "jieguo");
+        ShowImg.ShowImage(src2, "jieguo");
         return null;
     }
     /**

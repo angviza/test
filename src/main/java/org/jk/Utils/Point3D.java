@@ -1,4 +1,4 @@
-package com.jk.fight.www.Utils;
+package org.jk.Utils;
 
 public class Point3D {
     private int x;

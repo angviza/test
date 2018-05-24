@@ -8,8 +8,8 @@ package org.quinn.test;/*
  * Paolo Bolettieri <paolo.bolettieri@gmail.com>
  */
 
-import static com.jk.fight.www.dome.ShowImg.ShowImage;
-import static com.jk.fight.www.dome.ShowImg.circleLight;
+import static org.jk.demo.ShowImg.ShowImage;
+import static org.jk.demo.ShowImg.circleLight;
 import static org.bytedeco.javacpp.helper.opencv_core.RGB;
 import static org.bytedeco.javacpp.opencv_core.CV_32F;
 import static org.bytedeco.javacpp.opencv_core.CV_32SC1;
@@ -26,14 +26,11 @@ import static org.bytedeco.javacpp.opencv_imgcodecs.imread;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import com.jk.fight.www.Utils.CircleUtils;
-import com.jk.fight.www.Utils.Point3D;
-import com.jk.fight.www.dome.ShowImg;
-import com.sun.scenario.effect.GaussianBlur;
-import org.bytedeco.javacpp.opencv_core;
+import org.jk.Utils.CircleUtils;
+import org.jk.Utils.Point3D;
+import org.jk.demo.ShowImg;
 import org.bytedeco.javacpp.opencv_core.Mat;
 import org.bytedeco.javacpp.opencv_core.MatVector;
 import org.bytedeco.javacpp.opencv_core.Point;
