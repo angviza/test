@@ -15,6 +15,8 @@ import static org.bytedeco.javacpp.opencv_core.cvTranspose;
 import static org.bytedeco.javacpp.opencv_imgproc.cvCircle;
 import static org.bytedeco.javacpp.opencv_imgproc.cvRectangle;
 
+import java.util.List;
+
 import org.bytedeco.javacpp.opencv_core.CvMat;
 import org.bytedeco.javacpp.opencv_core.CvPoint;
 import org.bytedeco.javacpp.opencv_core.CvScalar;
@@ -93,7 +95,7 @@ public class ShowImg {
     }
     
     public static void circleLight(IplImage RawImage,int x,int y,int radius) {
-    	System.out.println("is cvhc3 ="+x+"-"+y+"-"+radius);
+//    	System.out.println("is cvhc3 ="+x+"-"+y+"-"+radius);
     	cvCircle(RawImage, cvPoint(x,y), 3, cvScalar(0,255, 0, 0),-1,8,0);
     	cvCircle(RawImage, cvPoint(x,y), radius, cvScalar(255,0, 0, 0),4,8,0);
     }
@@ -102,8 +104,13 @@ public class ShowImg {
     	circleLight(new IplImage(mat), (int)poi.get(0), (int)poi.get(1),(int)poi.get(2));
     }
     
+    public static void circleLight(Mat mat,List<Point3f> pois) {
+    	for (Point3f poi:pois) circleLight(new IplImage(mat), (int)poi.get(0), (int)poi.get(1),(int)poi.get(2));
+    }
+    
     public static void Highlight(IplImage image, int xMin, int yMin, int xMax, int yMax, int Thick)
     {
+//    	System.out.println("is cvRectangle,xMin ="+xMin+",yMin="+yMin+",xMax="+xMax+",yMax="+yMax);
         CvPoint pt1 = cvPoint(xMin,yMin);
         CvPoint pt2 = cvPoint(xMax,yMax);
         CvScalar color = cvScalar(255,0,0,0);       // blue [green] [red]
