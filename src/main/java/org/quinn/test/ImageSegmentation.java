@@ -30,6 +30,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.jk.fight.www.Utils.CircleUtils;
+import com.jk.fight.www.Utils.Point3D;
+import com.jk.fight.www.dome.ShowImg;
 import com.sun.scenario.effect.GaussianBlur;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.Mat;
@@ -102,12 +104,12 @@ public class ImageSegmentation {
 //		ShowImage(gray);
 //		ShowImage(source);
         //stemp 2：寻找外圆
-        opencv_core.Point3f poi = CircleUtils.searchIris(gray);
+        Point3D poi = CircleUtils.searchIris(gray);
         if (poi != null) circleLight(imgResult, poi);
 //		ShowImage(source);
         //stemp 3：寻找内圆
-        opencv_core.Point3f poi2 = CircleUtils.searchPupil(gray);
-        if (poi2 != null) circleLight(imgResult, poi2);
+        Point3D poi2 = CircleUtils.searchPupil(gray);
+        if (poi2 != null) ShowImg.circleLight(imgResult, poi2);
 
         Mat kpImage = new opencv_core.Mat();
         ImgUtils.findBlobs(imgResult, kpImage);

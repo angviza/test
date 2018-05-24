@@ -2,12 +2,14 @@ package com.jk.fight.www.dome;
 
 import java.util.List;
 
+import com.jk.fight.www.Utils.Point3D;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.opencv_core.Mat;
 import org.bytedeco.javacpp.opencv_core.Point3f;
 import org.bytedeco.javacpp.indexer.UByteRawIndexer;
 
 import com.jk.fight.www.Utils.CircleUtils;
+import org.quinn.test.ImgUtils;
 
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_imgcodecs.*;
@@ -86,7 +88,7 @@ public class Demo {
         ShowImage(source);
         Mat gray=CircleUtils.exeGray(source);
         //stemp 2:寻找反光点
-        List<Point3f> pois = CircleUtils.searchHeight(gray);
+        List<Point3D> pois = CircleUtils.searchHeight(gray);
 //		if(!pois.isEmpty()) {
 //			circleLight(source, pois);
 //			ShowImage(source,"searchHeight");
@@ -105,18 +107,22 @@ public class Demo {
 //		ShowImage(gray);
 //		ShowImage(source);
         //stemp 2：寻找外圆
-        Point3f poi = CircleUtils.searchIris(gray);
+        Point3D poi = CircleUtils.searchIris(gray);
 //		if(poi!=null) circleLight(source, poi);
 //		ShowImage(source);
         //stemp 3：寻找内圆
-        Point3f poi2 = CircleUtils.searchPupil(gray);
+        Point3D poi2 = CircleUtils.searchPupil(gray);
 //		if(poi2!=null) circleLight(source, poi2);
 //		ShowImage(source);
         //截取外圆
-        Mat circle =getCircle(source, (int)poi.get(0), (int)poi.get(1),(int)poi.get(2),(int)poi2.get(0), (int)poi2.get(1),(int)poi2.get(2));
+        Mat circle =getCircle(source, poi.getX(), poi.getY(),poi.getR(),poi2.getX(), poi2.getY(),poi2.getR());
 //		ShowImage(circle);
         //
-        CircleUtils.searchSpot(circle,source);
+//        CircleUtils.searchSpot(circle,source);
+        Mat ret = new Mat(circle.rows(),circle.cols(),CV_8UC3);
+        ImgUtils.findBlobs(circle,ret);
+        System.out.println(ret);
+        ShowImage(ret);
     }
     public static boolean isInCircle(int yx,int yy,int yr,int yx2,int yy2,int yr2,int x,int y){
         int x1 = Math.abs(x-yx);

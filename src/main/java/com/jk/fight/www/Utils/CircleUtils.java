@@ -18,11 +18,11 @@ public class CircleUtils {
 
     /**
      * 传入参数必须为单通道灰度图，查找反光点（圆）的的坐标并返回
-     * @param source
+     * @param graySrc
      */
-    public static List<Point3f> searchHeight(Mat graySrc){
+    public static List<Point3D> searchHeight(Mat graySrc){
         Mat gray=graySrc.clone();
-        List<Point3f> pois= new ArrayList<>();
+        List<Point3D> pois= new ArrayList<>();
         threshold(gray, gray, 205, 255, THRESH_TOZERO);
 //		Canny(gray, gray, 255,255);
         bitwise_not(gray, gray);
@@ -138,24 +138,25 @@ public class CircleUtils {
     }
     /**
      * 传入参数必须为单通道灰度图，查找虹膜（外圆）的的坐标并返回
-     * @param grayImage
+     * @param gray
      * @return
      */
-    public static Point3f searchIris(Mat gray){
+    public static Point3D searchIris(Mat gray){
         IplImage src = new IplImage(gray);
         IplImage newGray = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 1);
         cvThreshold(src, newGray, 50, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
 //        cvErode(newGray, newGray, null, 3);
         cvCanny(newGray, newGray, 50,100, 3);
-        ShowImage(newGray, "searchIris-newGray");
+//        ShowImage(newGray, "searchIris-newGray");
         CvSeq results =cvHoughCircles(newGray, CvMemStorage.create(), CV_HOUGH_GRADIENT,
                 1,1000,100,10,20,300);
         BytePointer p =cvGetSeqElem(results,0);
         cvReleaseImage(newGray);
         newGray=null;
-        return new Point3f(p);
+        Point3f p3 = new Point3f(p);
+        return new Point3D((int)p3.get(0),(int)p3.get(1),(int)p3.get(2));
     }
-    public static Point3f searchPupil(Mat gray){
+    public static Point3D searchPupil(Mat gray){
         IplImage src = new IplImage(gray);
         IplImage newGray = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 1);
         cvThreshold(src, newGray, 60, 80, CV_THRESH_BINARY);
@@ -170,7 +171,8 @@ public class CircleUtils {
         BytePointer p =cvGetSeqElem(results,0);
         cvReleaseImage(newGray);
         newGray=null;
-        return new Point3f(p);
+        Point3f p3 = new Point3f(p);
+        return new Point3D((int)p3.get(0),(int)p3.get(1),(int)p3.get(2));
     }
 
     public static Mat exeGray(Mat src) {

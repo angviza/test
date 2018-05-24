@@ -17,6 +17,7 @@ import static org.bytedeco.javacpp.opencv_imgproc.cvRectangle;
 
 import java.util.List;
 
+import com.jk.fight.www.Utils.Point3D;
 import org.bytedeco.javacpp.opencv_core.CvMat;
 import org.bytedeco.javacpp.opencv_core.CvPoint;
 import org.bytedeco.javacpp.opencv_core.CvScalar;
@@ -100,12 +101,12 @@ public class ShowImg {
         cvCircle(RawImage, cvPoint(x,y), radius, cvScalar(255,0, 0, 0),4,8,0);
     }
 
-    public static void circleLight(Mat mat,Point3f poi) {
-        circleLight(new IplImage(mat), (int)poi.get(0), (int)poi.get(1),(int)poi.get(2));
+    public static void circleLight(Mat mat,Point3D poi) {
+        circleLight(new IplImage(mat), poi.getX(), poi.getY(),poi.getR());
     }
 
-    public static void circleLight(Mat mat,List<Point3f> pois) {
-        for (Point3f poi:pois) circleLight(new IplImage(mat), (int)poi.get(0), (int)poi.get(1),(int)poi.get(2));
+    public static void circleLight(Mat mat,List<Point3D> pois) {
+        for (Point3D poi:pois) circleLight(new IplImage(mat), poi.getX(), poi.getY(),poi.getR());
     }
 
     public static void Highlight(IplImage image, int xMin, int yMin, int xMax, int yMax, int Thick)
