@@ -21,11 +21,11 @@ public class Demo {
         try {
             String path="D:\\SoftwareData\\jamesMot\\myProject\\test\\src\\main\\resources\\res\\";
 //		String[] names={"iris2.jpg","iris2.jpg","iris3.jpg"};
-//			String[] names={"20180417142503.jpg","20180418145543.jpg","1.jpg","2.jpg"};
-            String[] names={"2.jpg"};
+			String[] names={"20180417142503.jpg","20180418145543.jpg","1.jpg","2.jpg"};
+//            String[] names={"2.jpg"};
             for(String name:names){
                 Mat source = imread(path+name);
-//				ShowImage(source);
+				ShowImage(source,"源图");
                 checkAndShowImg(source);
 //				searchSpot2(source);
 //				test(source);
@@ -39,6 +39,7 @@ public class Demo {
 
     public static Mat getCircle(Mat source,int yx,int yy,int yr,int yx2,int yy2,int yr2){
         Mat bw = new Mat(source.rows(),source.cols(),CV_8UC3);
+//        Mat bw = source.clone();
         UByteRawIndexer indexer = bw.createIndexer();
         for(int row=0;row<source.rows();row++) {
             for(int col=0;col<source.cols();col++) {
@@ -116,13 +117,13 @@ public class Demo {
 //		ShowImage(source);
         //截取外圆
         Mat circle =getCircle(source, poi.getX(), poi.getY(),poi.getR(),poi2.getX(), poi2.getY(),poi2.getR());
-//		ShowImage(circle);
+		ShowImage(circle,"定位待查询的范围图");
         //
 //        CircleUtils.searchSpot(circle,source);
-        Mat ret = new Mat(circle.rows(),circle.cols(),CV_8UC3);
-        ImgUtils.findBlobs(circle,ret);
-        System.out.println(ret);
-        ShowImage(ret);
+//        Mat ret = new Mat(circle.rows(),circle.cols(),CV_8UC3);
+        List<Point3D> pois =ImgUtils.findBlobs(circle);
+        if(!pois.isEmpty()) circleLight(source, pois);
+        ShowImage(source,"查找斑点图结果图");
     }
     public static boolean isInCircle(int yx,int yy,int yr,int yx2,int yy2,int yr2,int x,int y){
         int x1 = Math.abs(x-yx);

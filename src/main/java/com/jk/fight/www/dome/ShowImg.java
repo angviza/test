@@ -18,6 +18,7 @@ import static org.bytedeco.javacpp.opencv_imgproc.cvRectangle;
 import java.util.List;
 
 import com.jk.fight.www.Utils.Point3D;
+import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.CvMat;
 import org.bytedeco.javacpp.opencv_core.CvPoint;
 import org.bytedeco.javacpp.opencv_core.CvScalar;
@@ -99,6 +100,26 @@ public class ShowImg {
 //    	System.out.println("is cvhc3 ="+x+"-"+y+"-"+radius);
         cvCircle(RawImage, cvPoint(x,y), 3, cvScalar(0,255, 0, 0),-1,8,0);
         cvCircle(RawImage, cvPoint(x,y), radius, cvScalar(255,0, 0, 0),4,8,0);
+    }
+
+    public static void printKeyPois(opencv_core.KeyPointVector keyPoints){
+        for(long i=0;i<keyPoints.size();i++){
+            opencv_core.KeyPoint kp=keyPoints.get(i);
+            Point3f p3=new Point3f(kp);
+            System.out.println(i+"\t x="+(int)p3.x()+"\t y="+(int)p3.y()+"\t radis="+p3.z());
+//            opencv_core.Point2f p2 = kp.pt();
+//            System.out.println((int)p2.x()+"\t"+(int)p2.y());
+//            System.out.println(kp.angle()+"\t"+kp.class_id()+"\t"+kp.octave()+"\t"+kp.pt().position()+"\t"+kp.response());//-1.0	-1	0	0	0.0
+        }
+
+//        System.out.println(keyPoints);//
+//        System.out.println(keyPoints.size());//66
+//        System.out.println("keyPoints.empty()="+keyPoints.empty());//false
+//        opencv_core.KeyPoint[] keys = keyPoints.get();
+//        System.out.println("keys="+keys);//xx
+//        System.out.println("keys.leng="+keys.length); //66
+//        System.out.println("keys0="+keys[0]);//org.bytedeco.javacpp.opencv_core$KeyPoint[address=0x1e76ba80,position=0,limit=0,capacity=0,deallocator=null]
+
     }
 
     public static void circleLight(Mat mat,Point3D poi) {

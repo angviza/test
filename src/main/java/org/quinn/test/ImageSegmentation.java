@@ -111,9 +111,11 @@ public class ImageSegmentation {
         Point3D poi2 = CircleUtils.searchPupil(gray);
         if (poi2 != null) ShowImg.circleLight(imgResult, poi2);
 
-        Mat kpImage = new opencv_core.Mat();
-        ImgUtils.findBlobs(imgResult, kpImage);
-        imshow("blobs",kpImage);
+
+//        ImgUtils.findBlobs(imgResult, kpImage);
+        List<Point3D> pois =ImgUtils.findBlobs(imgResult);
+        if(!pois.isEmpty()) circleLight(imgResult, pois);
+        imshow("blobs",imgResult);
         //        方框滤波——boxblur函数
         //        均值滤波——blur函数
         //        高斯滤波——GaussianBlur函数

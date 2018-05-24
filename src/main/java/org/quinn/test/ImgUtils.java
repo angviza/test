@@ -1,5 +1,7 @@
 package org.quinn.test;
 
+import com.jk.fight.www.Utils.Point3D;
+import com.jk.fight.www.dome.ShowImg;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.annotation.ByVal;
 import org.bytedeco.javacpp.annotation.Cast;
@@ -15,6 +17,8 @@ import org.opencv.core.Mat;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
@@ -59,27 +63,45 @@ public class ImgUtils {
     }
 
     //找斑点
-    public static void findBlobs(opencv_core.Mat src, opencv_core.Mat kpImage) {
+    public static List<Point3D> findBlobs(opencv_core.Mat src) {
         // 初始化BLOB参数
         opencv_features2d.SimpleBlobDetector.Params params = new opencv_features2d.SimpleBlobDetector.Params();
-        params.minDistBetweenBlobs(0.0f);
-        params.filterByInertia(false);
-        params.filterByConvexity(false);
-        params.filterByColor(true);
-        params.filterByCircularity(false);
+        params.thresholdStep(5);    //二值化的阈值步长，即公式1的t
+        params.minThreshold(40);   //二值化的起始阈值，即公式1的T1
+        params.maxThreshold(230);    //二值化的终止阈值，即公式1的T2
+//        //重复的最小次数，只有属于灰度图像斑点的那些二值图像斑点数量大于该值时，该灰度图像斑点才被认为是特征点
+        params.minRepeatability(4);
+//        //最小的斑点距离，不同二值图像的斑点间距离小于该值时，被认为是同一个位置的斑点，否则是不同位置上的斑点
+        params.minDistBetweenBlobs(2.0f);
+        params.filterByInertia(false);//斑点惯性率的限制变量
+//        params.minInertiaRatio(.6f);    //斑点的最小惯性率 ,默认 0.6
+//        params.maxInertiaRatio(2000.0f);    //斑点的最大惯性率
+        params.filterByColor(true);//斑点颜色的限制变量
+//        params.blobColor((byte)0);    //表示只提取黑色斑点；如果该变量为255，表示只提取白色斑点
         params.filterByArea(true);// 声明根据面积过滤，)设置最大与最小面积
-        params.minArea(20.0f);
-        params.maxArea(2000.0f);
-        params.filterByCircularity(true);// 声明根据圆度过滤，)设置最大与最小圆度
-        params.minCircularity(.2f);
-        params.maxCircularity(40f);
-        params.filterByConvexity(false);// 凸包形状分析 - 过滤凹包
-        params.minConvexity(20f);
-        params.maxConvexity(60f);
+        params.minArea(10.0f);////斑点的最小面积
+        params.maxArea(3000f);//斑点的最大面积
+        params.filterByCircularity(true);// 声明根据圆度过滤，)设置最大与最小圆度..斑点圆度的限制变量，默认是不限制
+        params.minCircularity(0.2f);//斑点的最小圆度
+        params.maxCircularity(2000f);//斑点的最大圆度，所能表示的float类型的最大值
+//        params.filterByConvexity(false);// 凸包形状分析 - 过滤凹包
+        params.filterByConvexity(false);//斑点凸度的限制变量
+//        params.minConvexity(.5f);//斑点的最小凸度
+//        params.maxConvexity(200f); //斑点的最大凸度
         opencv_features2d.SimpleBlobDetector detector = opencv_features2d.SimpleBlobDetector.create(params);
         KeyPointVector keyPoints = new KeyPointVector();
         detector.detect(src, keyPoints, new opencv_core.Mat());
-        opencv_features2d.drawKeypoints(src, keyPoints, kpImage, new Scalar(255, 0, 0, 0), opencv_features2d.DrawMatchesFlags.DRAW_RICH_KEYPOINTS);
+        ShowImg.printKeyPois(keyPoints);
+        List<Point3D> pois= new ArrayList<>();
+        Point3D poi;
+        for(long i=0;i<keyPoints.size();i++){
+            opencv_core.KeyPoint kp=keyPoints.get(i);
+            Point3f p3=new Point3f(kp);
+            poi=new Point3D((int)Math.rint(p3.x()),(int)Math.rint(p3.y()),(int)Math.rint(p3.z()));
+            pois.add(poi);
+        }
+//        opencv_features2d.drawKeypoints(src, keyPoints, kpImage, new Scalar(255, 0, 0, 0), opencv_features2d.DrawMatchesFlags.DRAW_RICH_KEYPOINTS);
+        return pois;
     }
 
 

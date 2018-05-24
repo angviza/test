@@ -154,7 +154,7 @@ public class CircleUtils {
         cvReleaseImage(newGray);
         newGray=null;
         Point3f p3 = new Point3f(p);
-        return new Point3D((int)p3.get(0),(int)p3.get(1),(int)p3.get(2));
+        return new Point3D((int)p3.x(),(int)p3.y(),(int)p3.z());
     }
     public static Point3D searchPupil(Mat gray){
         IplImage src = new IplImage(gray);
@@ -172,7 +172,7 @@ public class CircleUtils {
         cvReleaseImage(newGray);
         newGray=null;
         Point3f p3 = new Point3f(p);
-        return new Point3D((int)p3.get(0),(int)p3.get(1),(int)p3.get(2));
+        return new Point3D((int)p3.x(),(int)p3.y(),(int)p3.z());
     }
 
     public static Mat exeGray(Mat src) {
