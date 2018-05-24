@@ -27,7 +27,7 @@ import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 
 public class ShowImg {
-	// Versions with 2, 3, and 4 parms respectively
+    // Versions with 2, 3, and 4 parms respectively
     public static void ShowImage(IplImage image, String caption)
     {
         CvMat mat = image.asCvMat();
@@ -53,15 +53,15 @@ public class ShowImg {
     }
     public static void ShowImage(Mat mat)
     {
-    	ShowImage(new IplImage(mat), "test");
+        ShowImage(new IplImage(mat), "test");
     }
     public static void ShowImage(Mat mat,String caption)
     {
-    	ShowImage(new IplImage(mat),caption);
+        ShowImage(new IplImage(mat),caption);
     }
     public static void ShowImage(Mat mat, String caption, int size)
     {
-    	ShowImage(new IplImage(mat), caption, size);
+        ShowImage(new IplImage(mat), caption, size);
     }
     public static void imshow(String txt, Mat img) {
         CanvasFrame canvasFrame = new CanvasFrame(txt);
@@ -77,7 +77,7 @@ public class ShowImg {
         OpenCVFrameConverter converter = new OpenCVFrameConverter.ToIplImage();
         canvas.showImage(converter.convert(image));
     }
-    
+
     public static void Highlight(IplImage image, int [] inVec)
     {
         Highlight(image, inVec[0], inVec[1], inVec[2], inVec[3], 1);
@@ -90,24 +90,24 @@ public class ShowImg {
     {
         Highlight(image, xMin, yMin, xMax, yMax, 1);
     }
-    
+
     public static void pointLight(IplImage RawImage,int x,int y,int radius) {
     }
-    
+
     public static void circleLight(IplImage RawImage,int x,int y,int radius) {
 //    	System.out.println("is cvhc3 ="+x+"-"+y+"-"+radius);
-    	cvCircle(RawImage, cvPoint(x,y), 3, cvScalar(0,255, 0, 0),-1,8,0);
-    	cvCircle(RawImage, cvPoint(x,y), radius, cvScalar(255,0, 0, 0),4,8,0);
+        cvCircle(RawImage, cvPoint(x,y), 3, cvScalar(0,255, 0, 0),-1,8,0);
+        cvCircle(RawImage, cvPoint(x,y), radius, cvScalar(255,0, 0, 0),4,8,0);
     }
-    
+
     public static void circleLight(Mat mat,Point3f poi) {
-    	circleLight(new IplImage(mat), (int)poi.get(0), (int)poi.get(1),(int)poi.get(2));
+        circleLight(new IplImage(mat), (int)poi.get(0), (int)poi.get(1),(int)poi.get(2));
     }
-    
+
     public static void circleLight(Mat mat,List<Point3f> pois) {
-    	for (Point3f poi:pois) circleLight(new IplImage(mat), (int)poi.get(0), (int)poi.get(1),(int)poi.get(2));
+        for (Point3f poi:pois) circleLight(new IplImage(mat), (int)poi.get(0), (int)poi.get(1),(int)poi.get(2));
     }
-    
+
     public static void Highlight(IplImage image, int xMin, int yMin, int xMax, int yMax, int Thick)
     {
 //    	System.out.println("is cvRectangle,xMin ="+xMin+",yMin="+yMin+",xMax="+xMax+",yMax="+yMax);
@@ -116,7 +116,7 @@ public class ShowImg {
         CvScalar color = cvScalar(255,0,0,0);       // blue [green] [red]
         cvRectangle(image, pt1, pt2, color, Thick, 4, 0);
     }
-    
+
     public static void PrintGrayImage(IplImage image, String caption)
     {
         int size = 512; // impractical to print anything larger
@@ -135,17 +135,17 @@ public class ShowImg {
         CvMat mat = image.asCvMat();
         int cols = mat.cols(); if(cols < 1) cols = 1;
         int rows = mat.rows(); if(rows < 1) rows = 1;
-        
-        if(MinX < 0) MinX = 0; if(MinX > cols) MinX = cols; 
-        if(MaxX < 0) MaxX = 0; if(MaxX > cols) MaxX = cols; 
-        if(MinY < 0) MinY = 0; if(MinY > rows) MinY = rows; 
-        if(MaxY < 0) MaxY = 0; if(MaxY > rows) MaxY = rows; 
-        
+
+        if(MinX < 0) MinX = 0; if(MinX > cols) MinX = cols;
+        if(MaxX < 0) MaxX = 0; if(MaxX > cols) MaxX = cols;
+        if(MinY < 0) MinY = 0; if(MinY > rows) MinY = rows;
+        if(MaxY < 0) MaxY = 0; if(MaxY > rows) MaxY = rows;
+
         System.out.println("\n" + caption);
         System.out.print("   +");
         for(int icol = MinX; icol < MaxX; icol++) System.out.print("-");
         System.out.println("+");
-        
+
         for(int irow = MinY; irow < MaxY; irow++)
         {
             if(irow<10) System.out.print(" ");
@@ -174,7 +174,7 @@ public class ShowImg {
         int depth = mat.depth();
         System.out.println("ImageProperties for " + image + " : cols=" + cols + " rows=" + rows + " depth=" + depth);
     }
-    
+
     public static float BinaryHistogram(IplImage image)
     {
         CvScalar Sum = cvSum(image);
@@ -184,35 +184,35 @@ public class ShowImg {
         //float BlackPixels = TotalPixels - WhitePixels;
         return WhitePixels / TotalPixels;
     }
-  
+
     // Counterclockwise small angle rotation by skewing - Does not stretch border pixels
     public static IplImage SkewGrayImage(IplImage Src, double angle)    // angle is in radians
     {
         //double radians = - Math.PI * angle / 360.0;   // Half because skew is horizontal and vertical
         double sin = - Math.sin(angle);
         double AbsSin = Math.abs(sin);
-        
+
         int nChannels = Src.nChannels();
-        if(nChannels != 1) 
+        if(nChannels != 1)
         {
             System.out.println("ERROR: SkewGrayImage: Require 1 channel: nChannels=" + nChannels);
             System.exit(1);
         }
-        
+
         CvMat SrcMat = Src.asCvMat();
         int SrcCols = SrcMat.cols();
         int SrcRows = SrcMat.rows();
 
-        double WidthSkew = AbsSin * SrcRows; 
+        double WidthSkew = AbsSin * SrcRows;
         double HeightSkew = AbsSin * SrcCols;
-        
-        int DstCols = (int) ( SrcCols + WidthSkew ); 
+
+        int DstCols = (int) ( SrcCols + WidthSkew );
         int DstRows = (int) ( SrcRows + HeightSkew );
-    
+
         CvMat DstMat = cvCreateMat(DstRows, DstCols, CV_8UC1);  // Type matches IPL_DEPTH_8U
         cvSetZero(DstMat);
         cvNot(DstMat, DstMat);
-        
+
         for(int irow = 0; irow < DstRows; irow++)
         {
             int dcol = (int) ( WidthSkew * irow / SrcRows );
@@ -225,12 +225,12 @@ public class ShowImg {
                 else DstMat.put(irow, icol, (int) SrcMat.get(jrow,jcol));
             }
         }
-        
+
         IplImage Dst = cvCreateImage(cvSize(DstCols, DstRows), IPL_DEPTH_8U, 1);
         Dst = DstMat.asIplImage();
         return Dst;
     }
-    
+
     public static IplImage TransposeImage(IplImage SrcImage)
     {
         CvMat mat = SrcImage.asCvMat();
