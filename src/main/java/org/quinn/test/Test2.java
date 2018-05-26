@@ -22,7 +22,7 @@ public class Test2 {
                 gray, //Input image
                 mem, //Memory Storage
                 CV_HOUGH_GRADIENT, //Detection method
-                1, //Inverse ratio
+                10, //Inverse ratio
                 1, //Minimum distance between the centers of the detected circles
                 100, //Higher threshold for canny edge detector
                 100, //Threshold at the center detection stage

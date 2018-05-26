@@ -8,6 +8,8 @@ package org.quinn.test;/*
  * Paolo Bolettieri <paolo.bolettieri@gmail.com>
  */
 
+import static org.jk.demo.ShowImg.ShowImage;
+import static org.jk.demo.ShowImg.circleLight;
 import static org.bytedeco.javacpp.helper.opencv_core.RGB;
 import static org.bytedeco.javacpp.opencv_core.CV_32F;
 import static org.bytedeco.javacpp.opencv_core.CV_32SC1;
@@ -21,26 +23,14 @@ import static org.bytedeco.javacpp.opencv_core.normalize;
 import static org.bytedeco.javacpp.opencv_core.subtract;
 import static org.bytedeco.javacpp.opencv_core.theRNG;
 import static org.bytedeco.javacpp.opencv_imgcodecs.imread;
-import static org.bytedeco.javacpp.opencv_imgproc.CV_BGR2GRAY;
-import static org.bytedeco.javacpp.opencv_imgproc.CV_CHAIN_APPROX_SIMPLE;
-import static org.bytedeco.javacpp.opencv_imgproc.CV_DIST_L2;
-import static org.bytedeco.javacpp.opencv_imgproc.CV_RETR_EXTERNAL;
-import static org.bytedeco.javacpp.opencv_imgproc.CV_THRESH_BINARY;
-import static org.bytedeco.javacpp.opencv_imgproc.CV_THRESH_OTSU;
-import static org.bytedeco.javacpp.opencv_imgproc.circle;
-import static org.bytedeco.javacpp.opencv_imgproc.cvtColor;
-import static org.bytedeco.javacpp.opencv_imgproc.dilate;
-import static org.bytedeco.javacpp.opencv_imgproc.distanceTransform;
-import static org.bytedeco.javacpp.opencv_imgproc.drawContours;
-import static org.bytedeco.javacpp.opencv_imgproc.filter2D;
-import static org.bytedeco.javacpp.opencv_imgproc.findContours;
-import static org.bytedeco.javacpp.opencv_imgproc.threshold;
-import static org.bytedeco.javacpp.opencv_imgproc.watershed;
+import static org.bytedeco.javacpp.opencv_imgproc.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.jk.Utils.CircleUtils;
+import org.jk.Utils.Point3D;
+import org.jk.demo.ShowImg;
 import org.bytedeco.javacpp.opencv_core.Mat;
 import org.bytedeco.javacpp.opencv_core.MatVector;
 import org.bytedeco.javacpp.opencv_core.Point;
@@ -57,31 +47,36 @@ public class ImageSegmentation {
 
     public static void main(String[] args) {
         // Load the image
-        Mat src = imread(FileUtils.getResPath("res/iris3.jpg"));
+        Mat src = imread(FileUtils.getResPath("res/iris1.jpg"));
         // Check if everything was fine
         if (src.data().isNull())
             return;
         // Show source image
         imshow("Source Image", src);
-
+//图像边缘检测
+        Mat canny = new Mat();
+        ImgUtils.canny(src, canny, 60, 65, 3, true);
+        bitwise_not(canny, canny);
+        imshow("canny Background Image", canny);
         // Change the background from white to black, since that will help later to extract
         // better results during the use of Distance Transform
-        UByteIndexer srcIndexer = src.createIndexer();
-        for (int x = 0; x < srcIndexer.rows(); x++) {
-            for (int y = 0; y < srcIndexer.cols(); y++) {
-                int[] values = new int[3];
-                srcIndexer.get(x, y, values);
-                if (Arrays.equals(values, WHITE)) {
-                    srcIndexer.put(x, y, BLACK);
-                }
-            }
-        }
-        // Show output image
-        imshow("Black Background Image", src);
 
+//        UByteIndexer srcIndexer = src.createIndexer();
+//        for (int x = 0; x < srcIndexer.rows(); x++) {
+//            for (int y = 0; y < srcIndexer.cols(); y++) {
+//                int[] values = new int[3];
+//                srcIndexer.get(x, y, values);
+//                if (Arrays.equals(values, WHITE)) {
+//                    srcIndexer.put(x, y, BLACK);
+//                }
+//            }
+//        }
+        // Show output image
+        Mat gray = CircleUtils.exeGray(src);
         // Create a kernel that we will use for accuting/sharpening our image
         Mat kernel = Mat.ones(3, 3, CV_32F).asMat();
         FloatIndexer kernelIndexer = kernel.createIndexer();
+        //二阶导数的近似值，一个相当强的核
         kernelIndexer.put(1, 1, -8); // an approximation of second derivative, a quite strong kernel
 
         // do the laplacian filtering as it is
@@ -101,13 +96,71 @@ public class ImageSegmentation {
         // imshow( "Laplace Filtered Image", imgLaplacian );
         imshow("New Sharped Image", imgResult);
 
+
+
+//		ShowImage(gray);
+//		ShowImage(source);
+        //stemp 2：寻找外圆
+        Point3D poi = CircleUtils.searchIris(gray);
+        if (poi != null) circleLight(imgResult, poi);
+//		ShowImage(source);
+        //stemp 3：寻找内圆
+        Point3D poi2 = CircleUtils.searchPupil(gray);
+        if (poi2 != null) ShowImg.circleLight(imgResult, poi2);
+
+
+//        ImgUtils.findBlobs(imgResult, kpImage);
+        List<Point3D> pois =ImgUtils.findBlobs(imgResult);
+        if(!pois.isEmpty()) circleLight(imgResult, pois);
+        imshow("blobs",imgResult);
+        //        方框滤波——boxblur函数
+        //        均值滤波——blur函数
+        //        高斯滤波——GaussianBlur函数
+        //        中值滤波——medianBlur函数
+        //        双边滤波——bilateralFilter函数
+        //高斯滤波
+        //GaussianBlur(imgResult,imgResult,new opencv_core.Size(2,2),1);
+        //imshow("canny Background Image", imgResult);
+
+
         src = imgResult; // copy back
         // Create binary image from source image
         Mat bw = new Mat();
         cvtColor(src, bw, CV_BGR2GRAY);
-        threshold(bw, bw, 40, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
-        imshow("Binary Image", bw);
-
+        imshow("Gray Image", bw);
+        Mat bw1 = new Mat();
+//        函数threshold（）是对单通道的灰度图像进行阙值处理的（函数compare（）也可以达到同样的效果）。
+//
+//        彩色图像可以使用cvtColor(strImage,grayImage,COLOR_RGB2GRAY)来变为灰度图像。
+//
+//        double threshold( InputArray src, OutputArray dst,double thresh, double maxval, int type );
+//
+//        第一个参数为输入的图像，Mat类型的即可。
+//
+//        第二个参数为输出图像，且和输入图像有同等大小和类型
+//
+//                第三个参数为设定阙值的具体值
+//
+//        第四个参数 maxval是当第五个参数类型为CV_THRESH_BINARY和CV_THRESH_BINARY_INV是的最大值
+//
+//        第五个参数是确定生成阙值图像的方法，有以下几种：
+//
+//        1、CV_THRESH_BINARY：         dst(x,y)={ maxval（第四个参数值）if(src(x,y)>thresh) ,否则为0}
+//
+//        2、CV_THRESH_BINARY_INV：dst(x,y)={ 0 if(src(x,y)>thresh) ,否则为maxval}
+//
+//        3、CV_THRESH_TRUNC :            dst(x,y)={ thresh if(src(x,y)>thresh) ,否则为src(x,y)}
+//
+//        4、CV_THRESH_TOZERO:           dst(x,y)={ src(x,y) if(src(x,y)>thresh) ,否则为0}
+//
+//        5、CV_THRESH_TOZERO_INV:   dst(x,y)={ 0 if(src(x,y)>thresh) ,否则为src(x,y) }
+//
+//        CV_THRESH_BINARY
+        threshold(bw, bw1, 100, 200, CV_THRESH_BINARY);
+        imshow("Binary1 Image", bw1);
+        bitwise_not(bw1, bw1);
+        imshow("Binary1f Image", bw1);
+        if (true) return;
         // Perform the distance transform algorithm
         Mat dist = new Mat();
         distanceTransform(bw, dist, CV_DIST_L2, 3);
@@ -119,6 +172,7 @@ public class ImageSegmentation {
         // Threshold to obtain the peaks
         // This will be the markers for the foreground objects
         threshold(dist, dist, .4, 1., CV_THRESH_BINARY);
+        imshow("foreground", dist);
         // Dilate a bit the dist image
         Mat kernel1 = Mat.ones(3, 3, CV_8UC1).asMat();
         dilate(dist, dist, kernel1);
@@ -143,16 +197,16 @@ public class ImageSegmentation {
         watershed(src, markers);
         Mat mark = Mat.zeros(markers.size(), CV_8UC1).asMat();
         markers.convertTo(mark, CV_8UC1);
-        bitwise_not(mark, mark);
+//        bitwise_not(mark, mark);
 //            imshow("Markers_v2", mark); // uncomment this if you want to see how the mark
-                                    // image looks like at that point
+        // image looks like at that point
         // Generate random colors
         List<int[]> colors = new ArrayList<int[]>();
         for (int i = 0; i < contours.size(); i++) {
             int b = theRNG().uniform(0, 255);
             int g = theRNG().uniform(0, 255);
             int r = theRNG().uniform(0, 255);
-            int[] color = { b, g, r };
+            int[] color = {b, g, r};
             colors.add(color);
         }
         // Create the result image
