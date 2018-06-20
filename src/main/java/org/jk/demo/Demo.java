@@ -1,6 +1,7 @@
 package org.jk.demo;
 
 import java.io.File;
+import java.time.Clock;
 import java.util.List;
 
 import org.jk.Utils.Point3D;
@@ -12,7 +13,9 @@ import org.jk.Utils.CircleUtils;
 import org.quinn.test.FileUtils;
 import org.quinn.test.ImgUtils;
 
+import static org.bytedeco.javacpp.helper.opencv_imgproc.cvCreateHist;
 import static org.bytedeco.javacpp.opencv_core.*;
+import static org.bytedeco.javacpp.opencv_highgui.*;
 import static org.bytedeco.javacpp.opencv_imgcodecs.*;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 
@@ -31,7 +34,8 @@ public class Demo {
                 ShowImg.ShowImage(source, "源图");
                 checkAndShowImg(source);
 //				searchSpot2(source);
-//				test(source);
+//                showZFT(source);
+//                test(source);
 //				isInCircle(100, 100, 20, 50, 50);
             }
         } catch (Exception e) {
@@ -39,6 +43,80 @@ public class Demo {
         }
     }
 
+    public static void test(Mat source) {
+        int[] hdims = {16};
+        //划分直方图bins的个数，越多越精确
+        float[][] hranges = {{0,255}};
+        CvHistogram histv = cvCreateHist( 1,hdims, CV_HIST_ARRAY, hranges, 1 );
+
+        IplImage src = new IplImage(CircleUtils.exeGray(source));
+        cvCalcHist(src,histv);
+//        System.out.println(histv.bins());
+        for(int i=0;i<256;i++){
+//            System.out.println(cvGetReal1D(histv.bins(),i));
+        }
+
+    }
+
+    public static void showZFT(Mat source){
+        IplImage src,redImage,greenImage,blueImage;
+        src=new IplImage(source);
+        redImage=cvCreateImage(cvGetSize(src),IPL_DEPTH_8U,1);
+        greenImage=cvCreateImage(cvGetSize(src),IPL_DEPTH_8U,1);
+        blueImage=cvCreateImage(cvGetSize(src),IPL_DEPTH_8U,1);
+
+        cvSplit(src,blueImage,greenImage,redImage,null);
+        IplImage  b_planes[] = {blueImage};
+        IplImage  g_planes[] = {greenImage};
+        IplImage  r_planes[] = {redImage};
+/// Establish the number of bins
+        int histSize = 256;
+        /// Set the ranges ( for B,G,R) )
+        float range[] = { 0, 255} ;
+        float[] histRange[] = { range };
+        int hist_size[] = {histSize};
+
+        CvHistogram b_hist = cvCreateHist(1,hist_size,CV_HIST_ARRAY,histRange,1);
+        /// Compute the histograms:
+
+        cvCalcHist(b_planes,b_hist,0,null);
+
+        CvHistogram g_hist = cvCreateHist(1,hist_size,CV_HIST_ARRAY,histRange,1);
+        /// Compute the histograms:
+        cvCalcHist(g_planes,g_hist,0,null);
+        CvHistogram r_hist = cvCreateHist(1,hist_size,CV_HIST_ARRAY,histRange,1);
+        /// Compute the histograms:
+        cvCalcHist(r_planes,r_hist,0,null);
+
+        // Draw the histograms for B, G and R
+        int hist_w = 512; int hist_h = 400;
+        int bin_w = Math.round(hist_w/histSize );
+        CvMat histImage=cvCreateMat(hist_h, hist_w, CV_8UC3);
+        cvSet(histImage,CV_RGB( 0,0,0),null);
+        ///归一化， Normalize the result to [ 0, histImage.rows ]
+        cvNormalize(b_hist.mat(), b_hist.mat(), 1, histImage.rows(), NORM_MINMAX ,null);
+        cvNormalize(g_hist.mat(),g_hist.mat(), 1, histImage.rows(), NORM_MINMAX ,null);
+        cvNormalize(r_hist.mat(),r_hist.mat(), 1, histImage.rows(), NORM_MINMAX ,null);
+        /// Draw for each channel
+        for( int i = 1; i < histSize; i++ )
+        {
+            System.out.println(i+"=="+(int)Math.round(cvGetReal1D( b_hist.mat(),i)));
+            System.out.println(i+"=="+(int)(Math.round( cvGetReal1D( b_hist.bins(), i-1 ))));
+
+            cvLine( histImage, cvPoint( bin_w*(i-1), hist_h -(int)(Math.round( cvGetReal1D( b_hist.bins(), i-1 ))) ) ,
+                    cvPoint( bin_w*(i), hist_h - (int)Math.round(cvGetReal1D( b_hist.mat(),i)) ),
+                    CV_RGB( 255, 0, 0), 2, 8, 0 );
+            cvLine( histImage, cvPoint( bin_w*(i-1), hist_h - (int)Math.round(cvGetReal1D( g_hist.bins(),i-1)) ) ,
+                    cvPoint( bin_w*(i), hist_h - (int)Math.round(cvGetReal1D( g_hist.bins(),i)) ),
+                    CV_RGB( 0, 255, 0), 2, 8, 0 );
+            cvLine( histImage, cvPoint( bin_w*(i-1), hist_h - (int)Math.round(cvGetReal1D( r_hist.bins(),i-1)) ) ,
+                    cvPoint( bin_w*(i), hist_h - (int)Math.round(cvGetReal1D( r_hist.bins(),i)) ),
+                    CV_RGB( 0, 0, 255), 2, 8, 0 );
+        }
+/// Display
+        cvNamedWindow("calcHist Demo", CV_WINDOW_AUTOSIZE );
+        cvShowImage("calcHist Demo", histImage );
+    }
 
     public static Mat getCircle(Mat source, int yx, int yy, int yr, int yx2, int yy2, int yr2) {
         Mat bw = new Mat(source.rows(), source.cols(), CV_8UC3);

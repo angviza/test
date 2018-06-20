@@ -144,7 +144,7 @@ public class CircleUtils {
         IplImage src = new IplImage(gray);
         IplImage newGray = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 1);
         cvThreshold(src, newGray, 50, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
-//        cvErode(newGray, newGray, null, 3);
+        cvErode(newGray, newGray, null, 3);
         cvCanny(newGray, newGray, 50,100, 3);
 //        ShowImage(newGray, "searchIris-newGray");
         CvSeq results =cvHoughCircles(newGray, CvMemStorage.create(), CV_HOUGH_GRADIENT,
