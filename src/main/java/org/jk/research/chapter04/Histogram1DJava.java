@@ -55,15 +55,26 @@ public class Histogram1DJava {
         Indexer indexer = hist.createIndexer();
         for (int i = 0; i < numberOfBins; i++) {
             dest[i] = indexer.getDouble(i);
-            System.out.println(i+"=="+dest[i]);
+//            System.out.println(i+"=="+dest[i]);
         }
         return dest;
     }
 
+    public int[] getHistogramInt(Mat image) {
+        Mat hist = getHistogram(image);
+        int[] dest = new int[numberOfBins];
+        Indexer indexer = hist.createIndexer();
+        for (int i = 0; i < numberOfBins; i++) {
+            dest[i] = (int)indexer.getDouble(i);
+        }
+        return dest;
+    }
 
     private Mat getHistogram(Mat image) {
+        //new Mat 是模板
         return getHistogram(image, new Mat());
     }
+
 
     private Mat getHistogram(Mat image, Mat mask) {
         IntPointer histSize = new IntPointer(1);

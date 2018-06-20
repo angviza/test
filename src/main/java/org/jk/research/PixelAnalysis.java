@@ -24,9 +24,45 @@ public class PixelAnalysis {
 //        opencv_core.Mat srcMat = CV.loadAndShowOrExit(src);
         opencv_core.Mat srcMat = CV.loadAndShowOrExit(src, IMREAD_GRAYSCALE);
         Ex2ComputeHistogramGraphJava.findZFT(srcMat);
+        int[] HistGram=Ex2ComputeHistogramGraphJava.getZFT(srcMat);
+//        int thresh = GetMeanThreshold(HistGram);
+        int thresh = GetPTileThreshold(HistGram,50);
+        System.out.println("thresh="+thresh);
         opencv_core.Mat newGray =new opencv_core.Mat();
-        threshold(srcMat, newGray, 50, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
+        threshold(srcMat, newGray, thresh, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
         OpenCVUtilsJava.show(newGray,"newGray");
-        Ex2ComputeHistogramGraphJava.findZFT(newGray);
+//        Ex2ComputeHistogramGraphJava.findZFT(newGray);
+    }
+
+    //灰度平局值值法：
+    public static int GetMeanThreshold(int[] HistGram)
+    {
+        int Sum = 0, Amount = 0;
+        for (int Y = 0; Y < 256; Y++)
+        {
+            Amount += HistGram[Y];
+            Sum += Y * HistGram[Y];
+        }
+        return Sum / Amount;
+    }
+
+    /// <summary>
+    /// 百分比阈值
+    /// </summary>
+    /// <param name="HistGram">灰度图像的直方图</param>
+    /// <param name="Tile">背景在图像中所占的面积百分比</param>
+    /// <returns></returns>
+    public static int GetPTileThreshold(int[] HistGram, int Tile)
+    {
+        if(Tile<=0) Tile=50;
+        int Y, Amount = 0, Sum = 0;
+        for (Y = 0; Y < 256; Y++) Amount += HistGram[Y];        //  像素总数
+        System.out.println("像素总数Amount="+Amount);
+        for (Y = 0; Y < 256; Y++)
+        {
+            Sum = Sum + HistGram[Y];
+            if (Sum >= Amount * Tile / 100) return Y;
+        }
+        return -1;
     }
 }

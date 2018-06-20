@@ -29,4 +29,10 @@ public class Ex2ComputeHistogramGraphJava {
         // Display the graph
         show(histogram, "Histogram");
     }
+
+    public static int[] getZFT(Mat src) {
+        // Calculate histogram
+        Histogram1DJava h = new Histogram1DJava();
+        return h.getHistogramInt(src);
+    }
 }

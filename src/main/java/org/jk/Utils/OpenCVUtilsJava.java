@@ -77,7 +77,6 @@ public class OpenCVUtilsJava {
         OpenCVFrameConverter.ToMat converter = new OpenCVFrameConverter.ToMat();
         CanvasFrame canvas = new CanvasFrame(title, 1);
         canvas.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        System.out.println("is show ok!");
         canvas.showImage(converter.convert(mat));
     }
 
